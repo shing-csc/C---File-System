@@ -10,10 +10,9 @@
 #include <string>
 #include <cstring>
 
-
 using namespace std;
-constexpr int PORT = 8080;
-constexpr int BUFFER_SIZE = 1024;
+const int PORT = 8080;
+const int BUFFER_SIZE = 1024;
 
 
 int main(){
@@ -33,7 +32,7 @@ int main(){
 
 
     // Listens for client's connection REQUEST
-    listen(serverSocket, 5); 
+    listen(serverSocket, 10); 
     cout << "Server is listening on port " << PORT << endl;
 
 
@@ -54,11 +53,12 @@ int main(){
     cout << "Receiving filename " << buffer_fileName << endl;
 
     // Creation of output file
-    ofstream outFile(buffer_fileName, ios::binary); // Create the file if the file with this filename not exist
-
+    string directory = "serverfiles/"; 
+    string fullFilePath = directory + buffer_fileName;
+    ofstream outFile(fullFilePath, ios::binary); // Create the file if the file with this filename not exist
 
     // Handle the file data
-    char buffer_data[BUFFER_SIZE];
+    char buffer_data[BUFFER_SIZE] = {0};
     ssize_t bytesRead;
 
     while((bytesRead = recv(clientSocket, buffer_data, BUFFER_SIZE, 0)) > 0){
@@ -69,7 +69,7 @@ int main(){
     }
 
     if (bytesRead == 0){
-        cout << "File upload complete!" << endl;
+        cout << "File upload to " << fullFilePath << " complete!" << endl;
     }
     else{
         cout << "File upload failed" << endl;
