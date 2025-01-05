@@ -10,6 +10,8 @@
 #include <string>
 #include <cstring>
 
+#include "server_upload.h"
+
 using namespace std;
 const int PORT = 8080;
 const int BUFFER_SIZE = 1024;
@@ -35,49 +37,48 @@ int main(){
     listen(serverSocket, 10); 
     cout << "Server is listening on port " << PORT << endl;
 
-
     // Accepts the CONNECTION REQUEST from client
     int clientSocket = accept(serverSocket, nullptr, nullptr);
 
 
-    // Setting the buffer size of each buffer: temporary storage of data
-    char buffer_fileName[1024];
+    // TODO: Add a LOOP here
 
-    ssize_t nameLength = recv(
-        clientSocket, 
-        buffer_fileName, 
-        BUFFER_SIZE, 
-        0);
-    
-    buffer_fileName[nameLength] = '\0';
-    cout << "Receiving filename " << buffer_fileName << endl;
+    // Handling of user command: "UPLOAD"/"DOWNLOAD"/"REMOVAL/EXIT"
+    char buffer_command[1024];
+    ssize_t bufferLength = recv(
+        clientSocket,
+        buffer_command,
+        BUFFER_SIZE,
+        0
+    );
 
-    // Creation of output file
-    string directory = "serverfiles/"; 
-    string fullFilePath = directory + buffer_fileName;
-    ofstream outFile(fullFilePath, ios::binary); // Create the file if the file with this filename not exist
+    buffer_command[bufferLength] = '\0';
+    cout << "LOG: " << buffer_command << " command... " << endl;
+    std::string command(buffer_command, bufferLength);
 
-    // Handle the file data
-    char buffer_data[BUFFER_SIZE] = {0};
-    ssize_t bytesRead;
-
-    while((bytesRead = recv(clientSocket, buffer_data, BUFFER_SIZE, 0)) > 0){
+    if (strcmp(buffer_command, "UPLOAD") == 0){
+        try{
+                handleUpload(clientSocket, BUFFER_SIZE);
+        } catch (const std::exception& e) {
+            cerr << "LOG: Error in handleDownload: " << e.what() << endl;
+        }
         
-        // data:      buffer_data
-        // data size: bytesRead, not necessary equal to buffersize because of the LAST packet
-        outFile.write(buffer_data, bytesRead);
+    }
+    else if (strcmp(buffer_command, "DOWNLOAD") == 0){
+        
+    }
+    else if (strcmp(buffer_command, "REMOVAL") == 0){
+
+    }
+    else if (strcmp(buffer_command, "EXIT") == 0){
+
     }
 
-    if (bytesRead == 0){
-        cout << "File upload to " << fullFilePath << " complete!" << endl;
-    }
-    else{
-        cout << "File upload failed" << endl;
-    }
-
-    outFile.close();
+        // TODO: ERROR handling of the above functions causes an ERROR, the loop will still continue
+    
     close(clientSocket);
     close(serverSocket);
+    
 
     return 0;
 }

@@ -8,61 +8,58 @@
 #include <memory>
 
 #include <string>
-#include <cstring>
+
+#include "client_upload.h"
 
 using namespace std;
-const int PORT = 8080;
-const int BUFFER_SIZE = 1024;
 
-
-
-int main(){
-
-    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-
-    sockaddr_in serverAddress;
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(PORT);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
-
-
-    // Clientsocket establish connection to the server
-    if (connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1){
-        cerr << "Unable to connect to server" << endl;
-        close(clientSocket);
-        return -1;
-    }
+void handleUpload(int clientSocket, int bufferSize){
 
     string filename; 
+    string targetFilename;
+
+    int BUFFER_SIZE = bufferSize;
+    char buffer[BUFFER_SIZE];
+
+    cout << "==== Ensure that the file to be upload is in '/client_directory' ====" << endl;
+
+    
     cout << "Enter the filename of the file to upload: " << endl;
     cin >> filename;
-
 
     if (send(clientSocket, filename.c_str(), filename.size(), 0) == -1) {
         cerr << "Failed to send filename to server." << endl;
         close(clientSocket);
-        return -5;
+        return;
     }
 
-    string directory = "clientfiles/";
+    string directory = "../client_directory/";
     string fullFilePath = directory + filename;
+    char buffer_validFile[BUFFER_SIZE];
 
     ifstream inFile(fullFilePath, ios::binary);
     if (!inFile.is_open()){
-        cerr << "Failed to open file " << filename << endl;
+        send(clientSocket, "INVALID", strlen("INVALID"), 0);
+        //cerr << "Failed to open file " << filename << endl;
         close(clientSocket);
-        return -2;
+        return;
+    }
+    else{
+        send(clientSocket, "VALID", strlen("VALID"), 0);
     }
 
-    char buffer[BUFFER_SIZE] = {0};
+    cout << "Enter the target filename in the system: " << endl;
+    cin >> targetFilename;
+    send(clientSocket, targetFilename.c_str(), targetFilename.size(), 0);
 
+    // CLIENT ACTION: 
     // Obtain data from ifstream, load it to buffer and send to the client socket 
     while(inFile.read(buffer, sizeof(buffer))){
-
+        cout << buffer << endl;
         if (send(clientSocket, buffer, sizeof(buffer), 0) == -1){
             cerr << "Failed to send file data " << endl;
             close(clientSocket);
-            return -3;
+            return;
         }
     }
 
@@ -71,12 +68,15 @@ int main(){
         if (send(clientSocket, buffer, inFile.gcount(), 0) == -1){
             cerr << "Failed to send last chuck of file data " << endl;
             close(clientSocket);
-            return -4;
+            return;
         }
     }
 
     cout << "File upload complete!" << endl;
     inFile.close();
-    close(clientSocket);
-    return 0;
+
+
+
+
+
 }

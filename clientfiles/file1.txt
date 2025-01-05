@@ -1,2 +1,0 @@
-File 1
-This is a text file.
