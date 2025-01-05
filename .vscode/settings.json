@@ -3,6 +3,7 @@
         "cstring": "cpp",
         "memory": "cpp",
         "iostream": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "string": "cpp"
     }
 }
