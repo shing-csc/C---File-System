@@ -43,42 +43,52 @@ int main(){
 
     // TODO: Add a LOOP here
 
-    // Handling of user command: "UPLOAD"/"DOWNLOAD"/"REMOVAL/EXIT"
-    char buffer_command[1024];
-    ssize_t bufferLength = recv(
-        clientSocket,
-        buffer_command,
-        BUFFER_SIZE,
-        0
-    );
+    while(true){
+        // Handling of user command: "UPLOAD"/"DOWNLOAD"/"REMOVAL/EXIT"
+        char buffer_command[1024];
+        
+        // Remember the blockage functionality of recv function
+        ssize_t bufferLength = recv(
+            clientSocket,
+            buffer_command,
+            BUFFER_SIZE,
+            0
+        );
 
-    buffer_command[bufferLength] = '\0';
-    cout << "LOG: " << buffer_command << " command... " << endl;
-    std::string command(buffer_command, bufferLength);
+        // Testing: blockage of recv: cout << "blocking2?"<<endl;
+        buffer_command[bufferLength] = '\0';
+        
+        cout << "LOG: " << buffer_command << " command request " << endl;
+        std::string command(buffer_command, bufferLength);
 
-    if (strcmp(buffer_command, "UPLOAD") == 0){
-        try{
+        if (strcmp(buffer_command, "UPLOAD") == 0){
+            try{
                 handleUpload(clientSocket, BUFFER_SIZE);
-        } catch (const std::exception& e) {
-            cerr << "LOG: Error in handleDownload: " << e.what() << endl;
+
+            } catch (const std::exception& e) {
+                cerr << "LOG: Error in handleDownload: " << e.what() << endl;
+            }
+            
         }
-        
-    }
-    else if (strcmp(buffer_command, "DOWNLOAD") == 0){
-        
-    }
-    else if (strcmp(buffer_command, "REMOVAL") == 0){
+        else if (strcmp(buffer_command, "DOWNLOAD") == 0){
+            
+        }
+        else if (strcmp(buffer_command, "REMOVAL") == 0){
 
-    }
-    else if (strcmp(buffer_command, "EXIT") == 0){
+        }
+        else if (strcmp(buffer_command, "EXIT") == 0){
+            
+            close(clientSocket);
+            close(serverSocket);
+            break;
+        }
 
+        cout << "looping?"<<endl;
     }
-
-        // TODO: ERROR handling of the above functions causes an ERROR, the loop will still continue
+    // TODO: ERROR handling of the above functions causes an ERROR, the loop will still continue
     
     close(clientSocket);
     close(serverSocket);
-    
 
     return 0;
 }

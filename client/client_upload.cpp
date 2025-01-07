@@ -70,6 +70,7 @@ void handleUpload(int clientSocket, int bufferSize){
             close(clientSocket);
             return;
         }
+        send(clientSocket, "EOF", 3, 0);
     }
 
     cout << "File upload complete!" << endl;

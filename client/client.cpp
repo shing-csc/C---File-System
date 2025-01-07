@@ -52,6 +52,7 @@ int main(){
         }
         else if (command == "E"){
             send(clientSocket, "EXIT", strlen("EXIT"), 0);
+            break;
         }
         else{
             send(clientSocket, "UNKNOWN", strlen("UNKNOWN"), 0);

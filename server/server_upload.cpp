@@ -79,12 +79,15 @@ void handleUpload(int clientSocket, int bufferSize){
     }
     while((bytesRead = recv(clientSocket, buffer_data, BUFFER_SIZE, 0)) > 0){
         
-        cout.write(buffer_data, bytesRead);
-        cout << endl;
+        // SERVER ACTION 5: Receiving end of transmission message to end the blocking function caused by recv()
+        if (strncmp(buffer_data, "EOF", bytesRead) == 0){
+            cout << "End of transmission" << endl;
+            break;
+        }
 
         // Write the exact data read to the file
         outFile.write(buffer_data, bytesRead);
-        //outFile.flush();
+        outFile.flush();
 
         if (!outFile) {
             std::cerr << "Error writing to file: " << fullFilePath << std::endl;
@@ -100,4 +103,5 @@ void handleUpload(int clientSocket, int bufferSize){
     }
 
     outFile.close();
+    return;
 }
