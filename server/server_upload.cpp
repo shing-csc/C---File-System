@@ -64,21 +64,32 @@ void handleUpload(int clientSocket, int bufferSize){
         BUFFER_SIZE, 
         0
     );
+
     buffer_targetFileName[targetFileNameLength] = '\0';
     string fullFilePath = target_directory + buffer_targetFileName; 
-    ofstream outFile(fullFilePath, ios::binary); // Create the file if the file with this filename not exist
+    ofstream outFile(fullFilePath, std::ios::binary); // Create the file if the file with this filename not exist
 
     cout << "LOG: Target Filename Received:: " << fullFilePath << endl;
 
     // SERVER ACTION 4: Obtain data from target file from CLIENT
     ssize_t bytesRead;
 
+    if (!outFile.is_open()) {
+        std::cerr << "Failed to open file: " << fullFilePath << std::endl;
+    }
     while((bytesRead = recv(clientSocket, buffer_data, BUFFER_SIZE, 0)) > 0){
         
-        // data:      buffer_data
-        // data size: bytesRead, not necessary equal to buffersize because of the LAST packet
-        cout << buffer_data << endl;
+        cout.write(buffer_data, bytesRead);
+        cout << endl;
+
+        // Write the exact data read to the file
         outFile.write(buffer_data, bytesRead);
+        //outFile.flush();
+
+        if (!outFile) {
+            std::cerr << "Error writing to file: " << fullFilePath << std::endl;
+            break;
+        }
     }
 
     if (bytesRead == 0){
