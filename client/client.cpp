@@ -6,11 +6,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <memory>
+#include <arpa/inet.h>
 
 #include <string>
 #include <cstring>
 
 #include "client_upload.h"
+
 
 using namespace std;
 const int PORT = 8080;
@@ -18,14 +20,14 @@ const int BUFFER_SIZE = 1024;
 
 
 int main(){
-
+    
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     string command = "UNDEFINED";
 
     sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(PORT);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
+    serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 
     // Clientsocket establish connection to the server

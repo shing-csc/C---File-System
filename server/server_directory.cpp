@@ -1,13 +1,17 @@
 #include <iostream>
 #include <string>
 
+#include "server_directory.h"
+
 using namespace std;
 
 string handleDirectory(){
     
-    // TODO: Allow users to continusly accessing differnt directory
+    // TODO: LS
+    
 
-    // TODO: Allow users to list out all files in the directory
+    // TODO: CD
+
 
     // Optional TODO: Each user can only view the files with permission
 

@@ -10,11 +10,14 @@
 #include <string>
 
 #include "client_upload.h"
+//#include "client_serverDir.h"
 
 using namespace std;
 
 void handleUpload(int clientSocket, int bufferSize){
 
+    //handleServerDirectory(clientSocket, bufferSize);
+    
     string filename; 
     string targetFilename;
 
