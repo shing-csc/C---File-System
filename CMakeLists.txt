@@ -29,6 +29,7 @@ set(CLIENT_SOURCES
 include_directories(${INCLUDE_DIR})
 
 # Output directory
+# Bare in mind that relative paths 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${BUILD_DIR})
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
@@ -39,14 +40,3 @@ add_executable(client ${CLIENT_SOURCES})
 # Link pthread
 target_link_libraries(server pthread)
 target_link_libraries(client pthread)
-
-# Custom Commands to Copy Directories After Building
-add_custom_command(TARGET server POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/server_directory
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/server_directory)
-
-add_custom_command(TARGET client POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/client_directory
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/client_directory)

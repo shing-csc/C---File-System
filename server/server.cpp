@@ -64,8 +64,6 @@ void handleMultiRequests(int clientSocket, int bufferSize){
             close(clientSocket);
             break;
         }
-
-        cout << "looping?"<<endl;
     }
     
     // TODO: ERROR handling of the above functions causes an ERROR, the loop will still continue
