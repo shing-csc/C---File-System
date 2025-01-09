@@ -10,8 +10,8 @@
 #include <string>
 #include <cstring>
 
-#include "server_upload.h"
-#include "server_directory.h"
+#include "../include/server_upload.h"
+#include "../include/server_directory.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ void handleUpload(int clientSocket, int bufferSize){
         0
     );
     buffer_fileName[nameLength] = '\0';
-    cout << "LOG: Filename Received::" << buffer_fileName << endl;
+    cout << "LOG: Filename Received:" << buffer_fileName << endl;
 
 
     // SERVER ACTION 2: Obtain file validity from CLIENT 

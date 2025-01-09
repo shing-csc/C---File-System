@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++11 -pthread
 
 SERVER_DIR = server
 CLIENT_DIR = client
-BUILD_DIR = build
+BUILD_DIR = makeBuild
 TARGETS = $(BUILD_DIR)/server $(BUILD_DIR)/client 
 
 

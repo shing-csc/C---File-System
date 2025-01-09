@@ -18,7 +18,7 @@
 #include <arpa/inet.h>
 
 // Header files
-#include "server_upload.h"
+#include "../include/server_upload.h"
 
 using namespace std;
 const int PORT = 8080;
