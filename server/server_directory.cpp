@@ -17,5 +17,5 @@ string handleDirectory(){
 
     // Return the directory user decided to handle
 
-    return "../server_directory/";
+    return "../../server_directory/";
 }

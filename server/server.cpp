@@ -9,7 +9,7 @@
 #include <mutex>
 #include <vector>
 
-// For netwoeking
+// For networking
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/types.h>

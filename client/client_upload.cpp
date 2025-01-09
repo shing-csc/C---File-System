@@ -36,7 +36,7 @@ void handleUpload(int clientSocket, int bufferSize){
         return;
     }
 
-    string directory = "../client_directory/";
+    string directory = "../../client_directory/";
     string fullFilePath = directory + filename;
     char buffer_validFile[BUFFER_SIZE];
 
