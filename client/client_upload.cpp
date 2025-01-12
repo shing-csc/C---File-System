@@ -38,17 +38,16 @@ void handleUpload(int clientSocket, int bufferSize){
 
     string directory = "../../client_directory/";
     string fullFilePath = directory + filename;
-    char buffer_validFile[BUFFER_SIZE];
 
     ifstream inFile(fullFilePath, ios::binary);
     if (!inFile.is_open()){
-        send(clientSocket, "INVALID", strlen("INVALID"), 0);
+        send(clientSocket, "I", strlen("I"), 0);
         //cerr << "Failed to open file " << filename << endl;
         close(clientSocket);
         return;
     }
     else{
-        send(clientSocket, "VALID", strlen("VALID"), 0);
+        send(clientSocket, "V", strlen("V"), 0);
     }
 
     cout << "Enter the target filename in the system: " << endl;
@@ -58,7 +57,7 @@ void handleUpload(int clientSocket, int bufferSize){
     // CLIENT ACTION: 
     // Obtain data from ifstream, load it to buffer and send to the client socket 
     while(inFile.read(buffer, sizeof(buffer))){
-        cout << buffer << endl;
+
         if (send(clientSocket, buffer, sizeof(buffer), 0) == -1){
             cerr << "Failed to send file data " << endl;
             close(clientSocket);
@@ -78,9 +77,4 @@ void handleUpload(int clientSocket, int bufferSize){
 
     cout << "File upload complete!" << endl;
     inFile.close();
-
-
-
-
-
 }

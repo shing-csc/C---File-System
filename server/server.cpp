@@ -6,7 +6,6 @@
 
 // For multithreading
 #include <thread>
-#include <mutex>
 #include <vector>
 
 // For networking
@@ -18,7 +17,7 @@
 #include <arpa/inet.h>
 
 // Header files
-#include "../include/server_upload.h"
+#include "server_upload.h"
 
 using namespace std;
 const int PORT = 8080;
@@ -27,39 +26,36 @@ const int BUFFER_SIZE = 1024;
 void handleMultiRequests(int clientSocket, int bufferSize){
 
     while(true){
-        // Handling of user command: "UPLOAD"/"DOWNLOAD"/"REMOVAL/EXIT"
-        char buffer_command[1024];
         
-        // Remember the blockage functionality of recv function
-        ssize_t bufferLength = recv(
+        char buffer_command[2];         // Handling of user command: "U"/"D"/"R"/"E" (One byte) + "\n" (One byte) = 2
+
+        ssize_t bufferLength = recv(    // recv: blocking nature
             clientSocket,
             buffer_command,
-            bufferSize,
+            1,                          // bufferSize: 1, expect one byte send from client
             0
         );
 
-        // Testing: blockage of recv: cout << "blocking2?"<<endl;
         buffer_command[bufferLength] = '\0';
         
-        cout << "LOG: " << buffer_command << " command request " << endl;
         std::string command(buffer_command, bufferLength);
 
-        if (strcmp(buffer_command, "UPLOAD") == 0){
+        if (strcmp(buffer_command, "U") == 0){
+            cout << "LOG: UPLOAD command request " << endl;
             try{
                 handleUpload(clientSocket, BUFFER_SIZE);
 
             } catch (const std::exception& e) {
                 cerr << "LOG: Error in handleDownload: " << e.what() << endl;
             }
+        }
+        else if (strcmp(buffer_command, "D") == 0){
             
         }
-        else if (strcmp(buffer_command, "DOWNLOAD") == 0){
-            
-        }
-        else if (strcmp(buffer_command, "REMOVAL") == 0){
+        else if (strcmp(buffer_command, "R") == 0){
 
         }
-        else if (strcmp(buffer_command, "EXIT") == 0){
+        else if (strcmp(buffer_command, "E") == 0){
             
             close(clientSocket);
             break;
@@ -103,19 +99,21 @@ int main(){
 
     // Accepts the CONNECTION REQUEST from client
 
-    vector<thread> clientThreads; // vector of threads
-    
+    vector<thread> serverThreads; 
+
+    // The server will accept different client connections (no matter sent from process or threads) and,
+    // each connection is being managed by a thread of the main server process
+
     while(true){
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket == -1 ){
             cerr << "LOG: Failed to accept client connection" << endl;
             continue; // Skip this iteration and try again
         }
-        clientThreads.emplace_back(std::thread(handleMultiRequests, clientSocket, BUFFER_SIZE));
-
+        serverThreads.emplace_back(std::thread(handleMultiRequests, clientSocket, BUFFER_SIZE));
     }
 
-    for (auto &t : clientThreads){
+    for (auto &t : serverThreads){
         if (t.joinable()){
             t.join();
         }

@@ -3,10 +3,10 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <memory>
-#include <arpa/inet.h>
 
 #include <string>
 #include <cstring>
@@ -38,25 +38,25 @@ int main(){
 
 
     while(true){
-        cout << "command { UPLOAD (U) | DOWNLOAD (D) | REMOVE (R) | EXIT (E)}: " << endl;
+        cout << "command { UPLOAD (U) | DOWNLOAD (D) | REMOVAL (R) | EXIT (E)}: " << endl;
         cin >> command;
 
         if (command == "U"){
-            send(clientSocket, "UPLOAD", strlen("UPLOAD"), 0);
+            send(clientSocket, "U", strlen("U"), 0);
             handleUpload(clientSocket, BUFFER_SIZE);
         }
         else if (command == "D"){
-            send(clientSocket, "DOWNLOAD", strlen("DOWNLOAD"), 0);
+            send(clientSocket, "D", strlen("D"), 0);
         }
         else if (command == "R"){
-            send(clientSocket, "REMOVAL", strlen("REMOVAL"), 0);
+            send(clientSocket, "R", strlen("R"), 0);
         }
         else if (command == "E"){
-            send(clientSocket, "EXIT", strlen("EXIT"), 0);
+            send(clientSocket, "E", strlen("E"), 0);
             break;
         }
         else{
-            send(clientSocket, "UNKNOWN", strlen("UNKNOWN"), 0);
+            send(clientSocket, "U", strlen("U"), 0);
         }
     }
     
