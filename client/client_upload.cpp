@@ -8,6 +8,7 @@
 #include <memory>
 
 #include <string>
+#include <cstring>
 
 #include "../include/client_upload.h"
 //#include "client_serverDir.h"
